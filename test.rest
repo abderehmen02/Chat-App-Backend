@@ -1,0 +1,56 @@
+POST http://localhost:3000/api/v1/messages
+Content-Type: application/json
+
+{
+    "sender": {"id" : "thdsqkldjf" } ,
+    "receiver" : {"id" :"dkqfjqjkfjds"} , 
+    "text" : "mymsg"
+}
+
+
+###
+GET  http://localhost:2000/api/v1/room/62039a6045529a71d53bd74e
+
+###
+PATCH  http://localhost:2000/api/v1/user/abderehmen
+Content-Type: application/json
+
+{
+    
+    "passWord" :"abdo2015" , 
+    "rooms" : ["dksqm" , "dkmqsf" ] , 
+    "name" :"mohamed phjh"
+}
+### 
+POST http://localhost:2000/api/v1/user/signUp
+Content-Type: application/json
+
+{
+    "id" : "dkqlsfkldjqf" , 
+    "passWord" :"abdo2015" , 
+    "userName" : "ilahalaha0987"  ,
+    "rooms" : [] , 
+    "name" :"ilahalaha"
+}
+###
+POST http://localhost:2000/api/v1/user/signIn
+Content-Type: application/json
+
+{
+    "userName": "ilahalaha0987" , 
+    "passWord" : "abdo2015"
+} 
+
+###
+POST http://localhost:2000/api/v1/room
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFiZGVyZWhtZW4wMiIsInJvb21zIjpbImRrc3FtIiwiZGttcXNmIl0sIm5hbWUiOiJhYmRlcmVobWVuIiwiaWF0IjoxNjQ0NTcyNTA2fQ.tsE9Nrb4kkNDknxpWpYBJlIwQI4uuYz-Hkk7OHKzZnU
+Content-Type: application/json
+
+{
+    "members" : ["abderehmen" ,"hdklq"]
+}
+
+### 
+DELETE  http://localhost:2000/api/v1/room/62066f9bd96911b269f96a64
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImlsYWhhbGFoYTA5ODciLCJyb29tcyI6W10sIm5hbWUiOiJpbGFoYWxhaGEiLCJpYXQiOjE2NDQ1ODg2ODV9.qgGEfYgxwAyip8ao2JXbMpJ0Da7UOVfjlLE4jOlsK4o
+Content-Type: application/json
