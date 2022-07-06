@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 const messagesSchema = new mongoose.Schema( {
-    sender: {id: {type : String , required: [true , "sender id is not defined"]}},
-    receiver: {id: {type : String , required: [true , "sender id is not defined"]}},
+    sender: {type: String , required: [true , " you must provide a sender"]} ,
+    receiver: {type: String , required: [true , "you must provide a receiver"]},
+    visibles : {type: Array ,} ,  
     room : {type: String , required: [true , "the room message is not defiened "]} , 
     text: {type: String , required: [true, "you must provide a message"] } ,
 })
