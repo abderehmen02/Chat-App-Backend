@@ -162,7 +162,6 @@ const sendMessage = AsyncWraper (async (req , res)=>{
 res.status(200).json({"type" : "success"  , "data" : newRoom})
 })
 const getRoom = AsyncWraper(async(req, res )=>{
-  console.log("i got the request");
   const room = await roomSchema.findOne({ $or: [{ firstMember: req.user.userName , secondMember:  req.params.userName }, { firstMember: req.params.userName , secondMember: req.user.userName}] })
   if(room) {
     res.status(200).json({"type" : "success"  , "data" : room })

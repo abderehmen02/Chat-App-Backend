@@ -1,7 +1,6 @@
 const AsyncWraper = require("./asyncWraper")
 const UserSchema = require("../db/models/user")
 const jwt = require("jsonwebtoken")
-var path = require('path')
 
 const {hashSync , compare } = require("bcryptjs")
 const multer = require("multer") ;
@@ -34,7 +33,9 @@ const CreateUser = AsyncWraper( async(req , res , next)=>{
 req.body.passWord = hashSync(req.body.passWord , 8 )
 try{
 const data = await UserSchema.create(req.body)
-if(data){ res.status(201).json({"type" : "success" , "data" : data , "token" : generateToken(data) }) } }
+if(data){
+ 
+  res.status(201).json({"type" : "success" , "data" : data , "token" : generateToken(data) }) } }
 catch(err){
 res.status(400).json({"type" : "failed" , "error" : "userName" })  
 }
@@ -75,9 +76,9 @@ const DeleteUser = AsyncWraper(async (req , res, next)=>{
 
 
 const UpdateUser = AsyncWraper(async (req , res , next)=>{
- console.log("updatng user")
+
     if(req.body.image){
-      req.body.image = req.file.filename
+req.body.image = req.file.filename ; 
     }
 const oldData = await UserSchema.findOne({userName : req.user.userName})
 // if we found the user on the database  ; 
@@ -92,11 +93,7 @@ delete req.body.passWord  ;
 const newData  = await  UserSchema.findOneAndUpdate({ userName :  req.user.userName } , req.body  , {new: true} ) ;
 // if we get the new data ; 
     if(newData){
-
-
-
-req.body.newPassword && res.status(200).json({"type" : "success" ,  "loginData" : { userName : newData.userName  , passWord  : req.body.newPassword }  , "data" : newData  })  ; 
-!req.body.newPassword &&  res.status(200).json({"type" : "success" , "loginData" :  { userName : newData.userName  , passWord : oldPassword } , "data" : newData  } )  ;
+(req.body.newPassword || req.body.userName ) ? res.status(200).json({"type" : "success"   ,  "data" : newData  })  :   res.status(200).json({"type" : "success" ,"data" : newData  } )  ;
 }
 // we do do not get the data
 else{
@@ -105,7 +102,6 @@ else{
 
 }
 else{
-  console.log("there is an error ")
   res.status(404).json({"type" : "failed" , "error" : "authontification error"})  ; 
 }
 })
@@ -131,9 +127,7 @@ const FindUserWithInterests = AsyncWraper(async(req , res , next)=>{
   const interests = req.query.interests ; 
   const interestsArray  = interests.split(",")  ; 
   const usersWithSameInterests = await UserSchema.find( { interests: { $in: interestsArray } } )
-  usersWithSameInterests = usersWithSameInterests.filter(user  =>{
-    return user.userName !== req.user.userName
-  })
+
 if(usersWithSameInterests || usersWithSameInterests.length === 0  ){
   res.status(200).json({"type": "success" , "data" : {usersWithSameInterests: usersWithSameInterests.map(user=>{
 return {    name: user.name , 
@@ -174,23 +168,22 @@ const uploadMiddleWare = ()=>{
 }
 
 const updateProfile =  async (req , res )=>{
-console.log("calling update prfile function ")  ; 
 const oldData = await UserSchema.findOne({userName : req.user.userName})
-if(oldData && compare(req.body.passWord , oldData.passWord )){
-  console.log(req.body)
-  delete req.body.passWord
+if(oldData && await compare(req.body.passWord , oldData.passWord )){
+  if(req.body.newPassword) { req.body.passWord = hashSync(req.body.newPassword , 8 )  ;
+  }
+  else{ delete req.body.passWord }
 const newData  = await  UserSchema.findOneAndUpdate({ userName  : req.user.userName } , req.body  , {new : true} ) ;
 if(newData){
-req.body.newPassword && res.status(200).json({"type" : "success" ,  "loginData" : JSON.stringify({userName : newData.userName  , passWord  : req.body.newPassword } ) , "data" : newData  })  ; 
-!req.body.newPassword &&  res.status(200).json({"type" : "success" , "loginData" : JSON.stringify( {userName : newData.userName  , passWord : req.body.passWord }) , "data" : newData  } )  ;
+ res.status(200).json({"type" : "success"  , "data" : newData  })  ; 
 }
 else{
   res.status(500).json({"type" : "failed" , "error" : "can not get the new user from the database"})
 }    
 }
+else res.status(404).json({"type"  : "failed"  , "error"  : "authontification error"})
 }
 const uploadProfileImage = async (req, res )=>{
-  console.log(req.file);
 const newUser = await UserSchema.findOneAndUpdate({userName: req.user.userName } , {image: req.file.filename} , {new : true} )
 return res.status(201).json({"type" : "success" , "data": {"image" : newUser.image } })
 }

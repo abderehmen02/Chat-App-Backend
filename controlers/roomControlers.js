@@ -26,8 +26,7 @@ else res.status(404).json({"type" : "failed" , "error" : "this room is not you r
 const GetRoomMembers = async (req , res , next)=>{
     if(req.user.rooms.includes(req.params.room)){
    const roomsMembers  =  await user.find({rooms: req.params.room })  
-//    const room = await roomModel.findById(req.params.id)
-const receiver = roomsMembers.filter(item =>{ return item.userName !== req.user.userName })
+   const receiver = roomsMembers.filter(item =>{ return item.userName !== req.user.userName })
 
     res.status(201).json({"type" :"success" , data: messages } )}
 else res.status(404).json({"type" : "failed" , "error" : "this room is not you room"})

@@ -10,17 +10,14 @@ const Storage = multer.diskStorage({
         cb(new Error("file not stored") ,'myImg' )
     }
 })
-// const upload = multer({
-// dest: 'uploads/'
-// })
+
 const upload = multer({ dest: "uploads/" });
 const uploadMiddleWare = ()=>{
     return upload.single('image')
 }
 
 const UploadImage = (req , res )=>{
-    console.log("me")
-    console.log(req.file)   
+
     const newImage = new ImageModel({
         name : req.body.name , 
         image: {
